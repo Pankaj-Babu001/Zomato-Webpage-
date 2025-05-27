@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zomato Food Delivery App: System Design Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- 
+        Chosen Color Palette: Energetic & Playful
+        Primary: #FF6B6B (Coral Red)
+        Secondary: #FFD166 (Sunglow Yellow)
+        Accent 1: #06D6A0 (Caribbean Green)
+        Accent 2: #118AB2 (Blue NCS)
+        Dark/Text: #073B4C (Midnight Blue)
+        Background: #F7F9FB (Light Gray)
+        Card Background: #FFFFFF (White)
+
+        Narrative Plan:
+        1.  Hero Section: Title, brief intro to Zomato's system complexity.
+        2.  Core Objective: What the system aims to achieve (connect users, restaurants, delivery).
+        3.  High-Level Architecture Overview: Visual representation of the microservices architecture diagram (HTML/CSS).
+        4.  Key User Segments & Their Apps: Customer, Restaurant, Delivery Partner.
+        5.  Deep Dive: Backend Microservices: Highlight key services (e.g., Order, Payment, Delivery, Search). Maybe a bar chart of service categories.
+        6.  Database Strategy: Donut chart showing types of databases used (Relational, NoSQL, Geospatial, Cache, Queue).
+        7.  Technology Stack Highlights: Key technologies mentioned (e.g., Java, Python, Kafka, Docker).
+        8.  Critical User Flow: Order Placement (HTML/CSS flow diagram).
+        9.  Scalability & Reliability: Key non-functional requirements visualized (e.g., big numbers for uptime, users).
+        10. Challenges & Solutions: Brief overview of top challenges.
+        11. Conclusion: The complexity and robustness of the system.
+
+        Visualization Choices & Justifications (Confirming NO SVG, NO MERMAID JS):
+        -   High-Level Architecture (Section 4 of source): Goal: Organize. Chosen: HTML/CSS block diagram. Justification: Best for representing system components and flow without SVG/Mermaid. Library/Method: Tailwind CSS for styling divs as blocks and arrows (using borders or thin divs). NO SVG.
+        -   Database Strategy (Section 5.3): Goal: Compare (composition). Chosen: Donut Chart. Justification: Clearly shows the proportion of different database types used. Library/Method: Chart.js (Canvas). NO SVG.
+        -   Microservice Categories (Derived from Section 5.2): Goal: Compare. Chosen: Bar Chart. Justification: Shows the number/importance of different service categories. Library/Method: Chart.js (Canvas). NO SVG.
+        -   Order Placement Flow (Section 6.1): Goal: Organize (process). Chosen: HTML/CSS stepped list/flow. Justification: Clearly outlines sequential steps. Library/Method: Tailwind CSS for styling list items/cards in a sequence. NO SVG.
+        -   Scalability Metric (e.g., Uptime from Section 3): Goal: Inform. Chosen: Single Big Number. Justification: Highlights a key performance indicator. Library/Method: Styled HTML text. NO SVG.
+        -   Technology Stack (Section 9): Goal: Inform/Organize. Chosen: Styled HTML list/tags. Justification: Presents a collection of technologies clearly. Library/Method: Tailwind CSS. NO SVG.
+
+        Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output.
+    -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #F7F9FB, #E0E8F0, #F7F9FB); /* Subtle gradient */
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+            color: #073B4C; /* Midnight Blue Text */
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .gradient-text {
+            background: linear-gradient(to right, #118AB2, #06D6A0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .stat-card {
+            background-color: #FFFFFF; /* White Card Background */
+            border-left: 5px solid #118AB2; /* Blue NCS Accent */
+        }
+        .flow-step {
+            border: 2px solid #FFD166; /* Sunglow Yellow Border */
+            background-color: #FFFFFF;
+        }
+        .arrow {
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid #118AB2; /* Blue NCS */
+            margin: 10px auto;
+        }
+        .horizontal-arrow::after {
+            content: '→';
+            font-size: 2rem;
+            color: #118AB2; /* Blue NCS */
+            margin: 0 0.5rem;
+            line-height: 1;
+        }
+        .architecture-block {
+            background-color: #FFFFFF;
+            border: 1px solid #06D6A0; /* Caribbean Green Border */
+            color: #073B4C;
+        }
+        .architecture-block-title {
+            background-color: #06D6A0; /* Caribbean Green */
+            color: #FFFFFF;
+        }
+        .connector-line {
+            width: 2px;
+            background-color: #118AB2; /* Blue NCS */
+            margin: 0 auto;
+        }
+        .horizontal-connector-line {
+            height: 2px;
+            background-color: #118AB2; /* Blue NCS */
+            margin: auto 0;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-[#073B4C] text-white py-8 shadow-lg">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-2">Zomato Food Delivery App</h1>
+            <p class="text-xl md:text-2xl font-semibold gradient-text">A Glimpse into its Complex System Design</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+
+        <section id="introduction" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-4">The Engine Behind Your Meal</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    A food delivery application like Zomato is more than just a simple app; it's a sophisticated ecosystem connecting millions of customers with thousands of restaurants and delivery partners in real-time. This infographic explores the key architectural components and design considerations that make such a complex system work seamlessly, ensuring your food arrives fresh and on time.
+                </p>
+                <p class="text-lg leading-relaxed">
+                    From browsing menus and placing orders to real-time tracking and secure payments, numerous services work in concert. We'll delve into how this system is structured for scalability, reliability, and performance.
+                </p>
+            </div>
+        </section>
+
+        <section id="architecture-overview" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">High-Level Architecture: A Symphony of Services</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    Zomato's backend relies on a microservices architecture. This approach breaks down the massive application into smaller, independent services that communicate with each other. This allows for better scalability, easier maintenance, and independent deployment of features. Below is a simplified representation of this architecture.
+                </p>
+                <div class="space-y-4 text-center">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="architecture-block rounded-lg p-4 shadow-md">
+                            <div class="architecture-block-title font-semibold p-2 rounded-t-md">Customer App</div>
+                            <p class="text-sm pt-2">(iOS/Android/Web)</p>
+                        </div>
+                        <div class="architecture-block rounded-lg p-4 shadow-md">
+                            <div class="architecture-block-title font-semibold p-2 rounded-t-md">Restaurant Portal</div>
+                            <p class="text-sm pt-2">(Web)</p>
+                        </div>
+                        <div class="architecture-block rounded-lg p-4 shadow-md">
+                            <div class="architecture-block-title font-semibold p-2 rounded-t-md">Delivery Partner App</div>
+                            <p class="text-sm pt-2">(Mobile)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center items-center">
+                        <div class="connector-line h-8"></div>
+                    </div>
+                    <div class="arrow"></div>
+                    
+                    <div class="architecture-block rounded-lg p-4 shadow-md max-w-2xl mx-auto">
+                        <div class="architecture-block-title font-semibold p-2 rounded-t-md">API Gateway</div>
+                        <p class="text-sm pt-2">(Authentication, Rate Limiting, Request Routing, Load Balancing)</p>
+                    </div>
+
+                    <div class="flex justify-center items-center">
+                        <div class="connector-line h-8"></div>
+                    </div>
+                     <div class="arrow"></div>
+
+                    <div class="architecture-block rounded-lg p-6 shadow-md max-w-3xl mx-auto">
+                        <div class="architecture-block-title font-semibold p-2 rounded-t-md mb-3">Backend Microservices</div>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 text-xs">
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">User Management</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Restaurant Mgmt</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Menu Service</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Order Management</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Payment Service</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Delivery Mgmt</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Search Service</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Notification</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Review/Rating</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Location Service</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Analytics</div>
+                            <div class="bg-[#FFD166] text-[#073B4C] p-2 rounded shadow">Promotions</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center items-center">
+                        <div class="connector-line h-8"></div>
+                    </div>
+                     <div class="arrow"></div>
+
+                    <div class="architecture-block rounded-lg p-4 shadow-md max-w-2xl mx-auto">
+                        <div class="architecture-block-title font-semibold p-2 rounded-t-md">Databases & Storage</div>
+                        <p class="text-sm pt-2">(Relational, NoSQL, Geospatial, Cache, Message Queues)</p>
+                    </div>
+                     <div class="arrow"></div>
+                     <div class="architecture-block rounded-lg p-4 shadow-md max-w-2xl mx-auto">
+                        <div class="architecture-block-title font-semibold p-2 rounded-t-md">External Services</div>
+                        <p class="text-sm pt-2">(Payment Gateways, Map APIs, SMS/Email)</p>
+                    </div>
+                </div>
+                 <p class="text-sm mt-6 text-center text-gray-600">
+                    This diagram illustrates the flow from user applications through the API gateway to various backend microservices, which then interact with databases and external services. Each block represents a crucial part of the system.
+                </p>
+            </div>
+        </section>
+        
+        <section id="microservices-deep-dive" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">Powerhouse: Backend Microservices</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    The heart of Zomato's operations lies in its backend microservices. Each service is responsible for a specific business capability, ensuring modularity and focus. Here's a look at some core service categories.
+                </p>
+                <div class="chart-container mx-auto h-[400px] md:h-[450px] max-h-[500px]">
+                    <canvas id="microservicesChart"></canvas>
+                </div>
+                <p class="text-sm mt-6 text-center text-gray-600">
+                    The bar chart above highlights key categories of microservices. Services like Order Management, Payment, and Delivery are critical for the core user experience, while others like Search, Notification, and Analytics support and enhance platform functionality. This distribution allows for specialized development and scaling.
+                </p>
+
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#118AB2] mb-4 text-center">✨ Dive Deeper: Explain a Microservice ✨</h3>
+                    <p class="text-md leading-relaxed mb-4 text-center">
+                        Select a microservice from the list to get a detailed explanation of its role and functionalities, powered by Gemini.
+                    </p>
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <select id="microserviceSelect" title="Select a microservice to explain" class="p-3 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-[#118AB2] focus:border-transparent text-gray-700 w-full md:w-auto">
+                            <option value="Order Management Service">Order Management Service</option>
+                            <option value="Payment Service">Payment Service</option>
+                            <option value="Delivery Service">Delivery Service</option>
+                            <option value="User Management Service">User Management Service</option>
+                            <option value="Search Service">Search Service</option>
+                            <option value="Notification Service">Notification Service</option>
+                            <option value="Restaurant Management Service">Restaurant Management Service</option>
+                        </select>
+                        <button id="explainMicroserviceBtn" class="bg-[#06D6A0] hover:bg-[#05B28B] text-white font-bold py-3 px-6 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-full md:w-auto">
+                            Explain Selected Microservice
+                        </button>
+                    </div>
+                    <div id="microserviceExplanation" class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 text-gray-800 text-sm leading-relaxed min-h-[100px] flex items-center justify-center">
+                        <span id="microserviceLoader" class="hidden text-gray-500">Loading explanation...</span>
+                        <span id="microservicePlaceholder">Select a microservice and click the button to learn more.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="database-strategy" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">Storing the Data: A Diverse Database Approach</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    A complex system like Zomato requires different types of databases to handle diverse data needs efficiently. From structured user profiles to flexible review data and real-time geospatial information, the right database is chosen for each job.
+                </p>
+                <div class="chart-container mx-auto h-[350px] md:h-[400px] max-h-[450px]">
+                    <canvas id="databaseChart"></canvas>
+                </div>
+                <p class="text-sm mt-6 text-center text-gray-600">
+                    The donut chart visualizes the mix of database technologies. Relational databases handle transactional data, NoSQL databases manage flexible schemas like reviews, Geospatial databases power location services, Caching layers (like Redis) speed up access to frequently used data, and Message Queues (like Kafka) enable asynchronous communication between services.
+                </p>
+            </div>
+        </section>
+
+        <section id="order-flow" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">The Journey of an Order</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    Placing an order on Zomato initiates a complex sequence of events across multiple microservices. Here’s a simplified view of the order placement flow, showcasing the coordination required.
+                </p>
+                <div class="space-y-6">
+                    <div class="flow-step p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-lg text-[#073B4C] mb-1">1. Customer Places Order</h3>
+                        <p class="text-sm">Customer browses, adds to cart, and initiates checkout via the app.</p>
+                    </div>
+                    <div class="text-center text-2xl text-[#118AB2]">▼</div>
+                    <div class="flow-step p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-lg text-[#073B4C] mb-1">2. API Gateway Receives Request</h3>
+                        <p class="text-sm">Authenticates and routes the request to the Order Management Service.</p>
+                    </div>
+                    <div class="text-center text-2xl text-[#118AB2]">▼</div>
+                    <div class="flow-step p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-lg text-[#073B4C] mb-1">3. Order Management Service Processes</h3>
+                        <p class="text-sm">Validates order, creates a record, and initiates payment via Payment Service (using a message queue).</p>
+                    </div>
+                     <div class="text-center text-2xl text-[#118AB2]">▼</div>
+                    <div class="flow-step p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-lg text-[#073B4C] mb-1">4. Payment Service & Gateway</h3>
+                        <p class="text-sm">Interacts with external payment gateway. On success, notifies Order Management.</p>
+                    </div>
+                     <div class="text-center text-2xl text-[#118AB2]">▼</div>
+                    <div class="flow-step p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-lg text-[#073B4C] mb-1">5. Order Confirmation & Propagation</h3>
+                        <p class="text-sm">Order status updated. Notifications sent to Restaurant, Customer (via Notification Service), and Delivery Service for partner assignment.</p>
+                    </div>
+                     <div class="text-center text-2xl text-[#118AB2]">▼</div>
+                     <div class="flow-step p-4 rounded-lg shadow-md">
+                        <h3 class="font-semibold text-lg text-[#073B4C] mb-1">6. Restaurant Accepts & Delivery Assigned</h3>
+                        <p class="text-sm">Restaurant confirms order. Delivery Service assigns a partner. Real-time tracking begins.</p>
+                    </div>
+                </div>
+                <p class="text-sm mt-6 text-center text-gray-600">
+                    This flow highlights the asynchronous communication and coordination between services, crucial for a responsive and reliable ordering experience.
+                </p>
+            </div>
+        </section>
+
+        <section id="scalability-reliability" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">Built for Scale & Trust</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    Non-functional requirements like scalability and reliability are paramount for a platform serving millions. The system is designed to handle massive concurrent users and maintain high availability.
+                </p>
+                <div class="grid md:grid-cols-3 gap-6 text-center">
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <div class="text-5xl font-bold text-[#FF6B6B] mb-2">99.99%</div>
+                        <p class="text-lg font-semibold text-[#073B4C]">Target Uptime</p>
+                        <p class="text-sm text-gray-600">Ensuring the service is almost always available for users.</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <div class="text-5xl font-bold text-[#FFD166] mb-2">Millions</div>
+                        <p class="text-lg font-semibold text-[#073B4C]">Active Users</p>
+                        <p class="text-sm text-gray-600">Designed to handle a vast and growing user base.</p>
+                    </div>
+                    <div class="stat-card p-6 rounded-lg shadow-md">
+                        <div class="text-5xl font-bold text-[#06D6A0] mb-2">1000s</div>
+                        <p class="text-lg font-semibold text-[#073B4C]">Concurrent Orders</p>
+                        <p class="text-sm text-gray-600">Capacity to process a high volume of orders simultaneously, especially during peak hours.</p>
+                    </div>
+                </div>
+                <p class="text-lg leading-relaxed mt-8">
+                    Achieving these numbers involves horizontal scaling of microservices, robust database replication and sharding, extensive caching, asynchronous processing via message queues, and continuous load testing.
+                </p>
+                 <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#118AB2] mb-4 text-center">✨ Expand Your Knowledge: Another NFR ✨</h3>
+                    <p class="text-md leading-relaxed mb-4 text-center">
+                        Click the button to get a suggestion for another crucial non-functional requirement for a food delivery app, explained by Gemini.
+                    </p>
+                    <div class="flex justify-center">
+                        <button id="suggestNfrBtn" class="bg-[#FFD166] hover:bg-[#E6B84C] text-[#073B4C] font-bold py-3 px-6 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                            Suggest Another NFR
+                        </button>
+                    </div>
+                    <div id="nfrSuggestion" class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 text-gray-800 text-sm leading-relaxed min-h-[100px] flex items-center justify-center">
+                        <span id="nfrLoader" class="hidden text-gray-500">Generating suggestion...</span>
+                        <span id="nfrPlaceholder">Click the button to see a new non-functional requirement.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="tech-stack-highlights" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">Technology Powering the Platform</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    A diverse set of modern technologies underpins Zomato's system design, chosen for their strengths in handling specific challenges of a large-scale, real-time application.
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#073B4C] mb-3">Backend & Development</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>Programming Languages: Java (Spring Boot), Python (Django/Flask), Node.js, Go</li>
+                            <li>Containerization: Docker, Kubernetes (for orchestration)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#073B4C] mb-3">Data Tier & Messaging</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>Databases: PostgreSQL, MongoDB, Redis, Elasticsearch</li>
+                            <li>Message Brokers: Apache Kafka, RabbitMQ</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-semibold text-[#073B4C] mb-3">Frontend & Mobile</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>Mobile: Swift/Kotlin (Native), React Native, Flutter</li>
+                            <li>Web: React, Angular, Vue.js</li>
+                        </ul>
+                    </div>
+                     <div>
+                        <h3 class="text-xl font-semibold text-[#073B4C] mb-3">Infrastructure & Tools</h3>
+                        <ul class="list-disc list-inside space-y-1 text-gray-700">
+                            <li>Cloud Platforms: AWS, GCP, Azure</li>
+                            <li>Monitoring: Prometheus, Grafana</li>
+                            <li>API Gateway: Nginx, Kong</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="text-sm mt-6 text-center text-gray-600">
+                    This selection reflects a commitment to using proven, scalable, and maintainable technologies suitable for a microservices environment.
+                </p>
+            </div>
+        </section>
+
+        <section id="challenges" class="mb-16">
+            <div class="bg-white rounded-lg shadow-xl p-8">
+                 <h2 class="text-3xl font-bold text-[#118AB2] mb-6 text-center">Navigating Complex Challenges</h2>
+                <p class="text-lg leading-relaxed mb-8 text-center">
+                    Building and maintaining such a platform comes with significant challenges. Here are some key areas and how they are addressed:
+                </p>
+                <div class="space-y-4">
+                    <div class="p-4 border border-[#FF6B6B] rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#FF6B6B]">Real-time Tracking</h4>
+                        <p class="text-sm text-gray-700">Solution: WebSockets, efficient geospatial indexing, optimized map rendering.</p>
+                    </div>
+                    <div class="p-4 border border-[#FFD166] rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#FFD166]">Data Consistency (Distributed Systems)</h4>
+                        <p class="text-sm text-gray-700">Solution: Eventual consistency, Saga patterns, idempotent operations.</p>
+                    </div>
+                    <div class="p-4 border border-[#06D6A0] rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#06D6A0]">Peak Load Management</h4>
+                        <p class="text-sm text-gray-700">Solution: Auto-scaling, robust message queues, caching, circuit breakers.</p>
+                    </div>
+                     <div class="p-4 border border-[#118AB2] rounded-lg bg-white">
+                        <h4 class="font-semibold text-lg text-[#118AB2]">Security & Fraud Detection</h4>
+                        <p class="text-sm text-gray-700">Solution: Strong authentication, encryption, regular audits, fraud detection algorithms.</p>
+                    </div>
+                </div>
+                <div class="mt-8 pt-6 border-t border-gray-200">
+                    <h3 class="text-2xl font-bold text-[#118AB2] mb-4 text-center">✨ Brainstorm: New Challenge & Solution ✨</h3>
+                    <p class="text-md leading-relaxed mb-4 text-center">
+                        Let Gemini propose a hypothetical new system design challenge for a food delivery app and a high-level solution.
+                    </p>
+                    <div class="flex justify-center">
+                        <button id="proposeChallengeBtn" class="bg-[#FF6B6B] hover:bg-[#E65A5A] text-white font-bold py-3 px-6 rounded-md shadow-lg transition duration-300 ease-in-out transform hover:scale-105">
+                            Propose a New Challenge & Solution
+                        </button>
+                    </div>
+                    <div id="challengeSolution" class="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200 text-gray-800 text-sm leading-relaxed min-h-[100px] flex items-center justify-center">
+                        <span id="challengeLoader" class="hidden text-gray-500">Thinking of new challenges...</span>
+                        <span id="challengePlaceholder">Click the button to explore a new system design challenge.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center py-12 border-t border-gray-300">
+            <p class="text-[#073B4C]">This infographic provides a high-level overview of the Zomato food delivery app's system design.</p>
+            <p class="text-sm text-gray-500">Data and concepts based on the provided "Zomato Food Delivery App System Design" document.</p>
+        </footer>
+
+    </main>
+
+    <script>
+        const CHART_COLORS = {
+            red: '#FF6B6B',
+            yellow: '#FFD166',
+            green: '#06D6A0',
+            blue: '#118AB2',
+            darkBlue: '#073B4C',
+            grey: '#CCCCCC'
+        };
+
+        function processLabel(label, maxLength = 16) {
+            if (label.length <= maxLength) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + ' ' + word).trim().length > maxLength && currentLine.length > 0) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    currentLine = (currentLine + ' ' + word).trim();
+                }
+            }
+            if (currentLine.length > 0) {
+                lines.push(currentLine);
+            }
+            return lines;
+        }
+        
+        const tooltipTitleCallback = (tooltipItems) => {
+            const item = tooltipItems[0];
+            let label = item.chart.data.labels[item.dataIndex];
+            if (Array.isArray(label)) {
+                return label.join(' ');
+            }
+            return label;
+        };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    labels: {
+                        color: CHART_COLORS.darkBlue,
+                        font: { size: 12 }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: tooltipTitleCallback
+                    },
+                    backgroundColor: CHART_COLORS.darkBlue,
+                    titleColor: CHART_COLORS.yellow,
+                    bodyColor: CHART_COLORS.green,
+                    padding: 10
+                }
+            },
+            scales: {
+                x: {
+                    ticks: { color: CHART_COLORS.darkBlue, font: { size: 10 } },
+                    grid: { color: CHART_COLORS.grey }
+                },
+                y: {
+                    ticks: { color: CHART_COLORS.darkBlue, font: { size: 10 } },
+                    grid: { color: CHART_COLORS.grey },
+                    beginAtZero: true
+                }
+            }
+        };
+        
+        const microservicesData = {
+            labels: [
+                processLabel('Order Management'), 
+                processLabel('Payment Services'), 
+                processLabel('Delivery & Logistics'), 
+                processLabel('User & Restaurant Mgmt'), 
+                processLabel('Search & Discovery'),
+                processLabel('Notifications & Comms'),
+                processLabel('Analytics & Reporting')
+            ],
+            datasets: [{
+                label: 'Importance/Complexity Score (Illustrative)',
+                data: [90, 85, 88, 75, 80, 70, 65],
+                backgroundColor: [
+                    CHART_COLORS.red,
+                    CHART_COLORS.yellow,
+                    CHART_COLORS.green,
+                    CHART_COLORS.blue,
+                    CHART_COLORS.red, 
+                    CHART_COLORS.yellow,
+                    CHART_COLORS.green
+                ],
+                 borderColor: [
+                    CHART_COLORS.red,
+                    CHART_COLORS.yellow,
+                    CHART_COLORS.green,
+                    CHART_COLORS.blue,
+                    CHART_COLORS.red, 
+                    CHART_COLORS.yellow,
+                    CHART_COLORS.green
+                ],
+                borderWidth: 1,
+                borderRadius: 5,
+                barPercentage: 0.7,
+                categoryPercentage: 0.8
+            }]
+        };
+
+        const microservicesChartCtx = document.getElementById('microservicesChart').getContext('2d');
+        new Chart(microservicesChartCtx, {
+            type: 'bar',
+            data: microservicesData,
+            options: { ...commonChartOptions }
+        });
+
+
+        const databaseData = {
+            labels: [
+                processLabel('Relational DBs (e.g., PostgreSQL)'), 
+                processLabel('NoSQL DBs (e.g., MongoDB)'), 
+                processLabel('Geospatial DBs (e.g., PostGIS)'), 
+                processLabel('Caching (e.g., Redis)'), 
+                processLabel('Message Queues (e.g., Kafka)')
+            ],
+            datasets: [{
+                label: 'Database Usage Distribution',
+                data: [35, 25, 15, 15, 10],
+                backgroundColor: [
+                    CHART_COLORS.red,
+                    CHART_COLORS.yellow,
+                    CHART_COLORS.green,
+                    CHART_COLORS.blue,
+                    CHART_COLORS.darkBlue
+                ],
+                hoverOffset: 4,
+                borderColor: '#FFFFFF',
+                borderWidth: 2
+            }]
+        };
+
+        const databaseChartCtx = document.getElementById('databaseChart').getContext('2d');
+        new Chart(databaseChartCtx, {
+            type: 'doughnut',
+            data: databaseData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { 
+                            color: CHART_COLORS.darkBlue, 
+                            font: { size: 11 },
+                            padding: 15,
+                            boxWidth: 15,
+                             usePointStyle: true,
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: tooltipTitleCallback,
+                             label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        },
+                        backgroundColor: CHART_COLORS.darkBlue,
+                        titleColor: CHART_COLORS.yellow,
+                        bodyColor: CHART_COLORS.green,
+                        padding: 10
+                    }
+                }
+            }
+        });
+
+        // Gemini API Integration Logic
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=`; // API key provided by Canvas runtime
+
+        async function callGeminiAPI(prompt, outputElement, loaderElement, placeholderElement) {
+            outputElement.innerHTML = '';
+            placeholderElement.classList.add('hidden');
+            loaderElement.classList.remove('hidden');
+
+            try {
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    outputElement.innerHTML = text;
+                } else {
+                    outputElement.innerHTML = 'Could not generate a response. Please try again.';
+                }
+            } catch (error) {
+                console.error('Error calling Gemini API:', error);
+                outputElement.innerHTML = 'An error occurred. Please check the console.';
+            } finally {
+                loaderElement.classList.add('hidden');
+                if (outputElement.innerHTML === '') {
+                    placeholderElement.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Feature 1: Explain a Microservice
+        const microserviceSelect = document.getElementById('microserviceSelect');
+        const explainMicroserviceBtn = document.getElementById('explainMicroserviceBtn');
+        const microserviceExplanation = document.getElementById('microserviceExplanation');
+        const microserviceLoader = document.getElementById('microserviceLoader');
+        const microservicePlaceholder = document.getElementById('microservicePlaceholder');
+
+        explainMicroserviceBtn.addEventListener('click', () => {
+            const selectedMicroservice = microserviceSelect.value;
+            const prompt = `Explain the role and key functionalities of the "${selectedMicroservice}" in a food delivery app system design, based on common industry practices and the provided document's context. Keep the explanation concise and focused on its system design relevance.`;
+            callGeminiAPI(prompt, microserviceExplanation, microserviceLoader, microservicePlaceholder);
+        });
+
+        // Feature 2: Suggest a Non-Functional Requirement
+        const suggestNfrBtn = document.getElementById('suggestNfrBtn');
+        const nfrSuggestion = document.getElementById('nfrSuggestion');
+        const nfrLoader = document.getElementById('nfrLoader');
+        const nfrPlaceholder = document.getElementById('nfrPlaceholder');
+
+        suggestNfrBtn.addEventListener('click', () => {
+            const prompt = `Suggest one additional important non-functional requirement for a large-scale food delivery application like Zomato, and briefly explain why it's crucial for the system design. Focus on a requirement not explicitly mentioned in the provided text (Scalability, Reliability, Performance, Data Consistency, Security, Fault Tolerance, Maintainability, Geospatial Capabilities).`;
+            callGeminiAPI(prompt, nfrSuggestion, nfrLoader, nfrPlaceholder);
+        });
+
+        // Feature 3: Hypothetical Challenge & Solution
+        const proposeChallengeBtn = document.getElementById('proposeChallengeBtn');
+        const challengeSolution = document.getElementById('challengeSolution');
+        const challengeLoader = document.getElementById('challengeLoader');
+        const challengePlaceholder = document.getElementById('challengePlaceholder');
+
+        proposeChallengeBtn.addEventListener('click', () => {
+            const prompt = `Imagine a new, complex system design challenge for a food delivery app like Zomato that isn't already listed (Real-time Tracking, Data Consistency in Distributed Systems, Peak Load Management, Security & Fraud Detection). Describe this challenge and propose a high-level system design solution for it.`;
+            callGeminiAPI(prompt, challengeSolution, challengeLoader, challengePlaceholder);
+        });
+    </script>
+</body>
+</html>
